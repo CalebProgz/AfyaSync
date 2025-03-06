@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMI Calculator - AfyaSync</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-blue-100 flex items-center justify-center min-h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-lg w-96 text-center">
+        <h1 class="text-2xl font-bold text-blue-600">BMI Calculator</h1>
+        <p class="text-gray-600 mt-2">Enter your height and weight to check your BMI</p>
+
+        <div class="mt-4">
+            <label class="block text-left text-gray-700 font-medium">Height (cm)</label>
+            <input id="height" type="number" class="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400">
+        </div>
+
+        <div class="mt-4">
+            <label class="block text-left text-gray-700 font-medium">Weight (kg)</label>
+            <input id="weight" type="number" class="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400">
+        </div>
+
+        <button onclick="calculateBMI()" class="bg-blue-500 text-white px-4 py-2 rounded-md mt-4 w-full hover:bg-blue-600">Calculate</button>
+
+        <div id="result" class="mt-4 text-lg font-semibold text-gray-700"></div>
+
+        <p id="advice" class="mt-2 text-gray-600"></p>
+        
+        <a href="homepage.html" class="block text-blue-500 mt-4 hover:underline">Back to Home</a>
+    </div>
+
+    <script>
+        function calculateBMI() {
+            let height = document.getElementById('height').value / 100;
+            let weight = document.getElementById('weight').value;
+            let bmi = (weight / (height * height)).toFixed(2);
+            
+            let resultText = `Your BMI is: ${bmi}`;
+            let advice = "";
+            
+            if (bmi < 18.5) {
+                advice = "You are underweight. Consider a balanced diet.";
+            } else if (bmi >= 18.5 && bmi < 24.9) {
+                advice = "Your weight is normal. Keep maintaining a healthy lifestyle!";
+            } else if (bmi >= 25 && bmi < 29.9) {
+                advice = "You are overweight. Consider regular exercise and a healthy diet.";
+            } else {
+                advice = "You are obese. A healthy diet and exercise are strongly recommended.";
+            }
+            
+            document.getElementById('result').innerText = resultText;
+            document.getElementById('advice').innerText = advice;
+        }
+    </script>
+</body>
+</html>

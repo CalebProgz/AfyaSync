@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+    <link rel="stylesheet" href="homepage.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <h2>Menu</h2>
+            <button onclick="goToBMI()">BMI Calculator</button>
+            <script>
+                function goToBMI() {
+                    window.location.href = "BMI.html"; 
+                }
+                </script>
+            <button onclick="editDetails()">Edit Profile</button>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="content">
+            <h1>AfyaSync</h1>
+            <div class="user-info">
+                <img id="profile-pic" src="https://i.pinimg.com/736x/f7/52/76/f75276daa824753feab1f48879bc892f.jpg" alt="Profile Picture">
+                <p><strong>Welcome,</strong> <span id="user-name">Mary</span></p>
+                <p><strong>Email:</strong> <span id="user-email">mary.ann@gmail.com</span></p>
+                <p><strong>Details:</strong> <span id="user-details">Age: 25, Height: 175cm, Weight: 70kg</span></p>
+                <input type="file" id="upload-pic" accept="image/*" onchange="changeProfilePic()">
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
