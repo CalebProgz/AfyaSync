@@ -4,31 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home Page</title>
-    <link rel="stylesheet" href="./homepage.css">
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <div class="container">
+<body class="bg-gray-100 h-screen m-0 p-0">
+    <div class="flex w-full">
         <!-- Sidebar Navigation -->
-        <aside class="sidebar">
-            <h2>Menu</h2>
-            <button onclick="goToBMI()">BMI Calculator</button>
+        <aside class="w-56 bg-blue-600 text-white p-5 flex flex-col items-center">
+            <h2 class="mb-4 text-xl">Menu</h2>
+            <button onclick="goToBMI()" class="w-full py-2 px-4 mb-2 bg-white text-blue-600 rounded hover:bg-gray-200 transition-colors">BMI Calculator</button>
             <script>
                 function goToBMI() {
                     window.location.href = "BMI.html"; 
                 }
-                </script>
-            <button onclick="editDetails()">Edit Profile</button>
+            </script>
+            <button onclick="editDetails()" class="w-full py-2 px-4 bg-white text-blue-600 rounded hover:bg-gray-200 transition-colors">Edit Profile</button>
         </aside>
 
         <!-- Main Content -->
-        <main class="content">
-            <h1>AfyaSync</h1>
-            <div class="user-info">
-                <img id="profile-pic" src="https://i.pinimg.com/736x/f7/52/76/f75276daa824753feab1f48879bc892f.jpg" alt="Profile Picture">
-                <p><strong>Welcome,</strong> <span id="user-name">Mary</span></p>
-                <p><strong>Email:</strong> <span id="user-email">mary.ann@gmail.com</span></p>
-                <p><strong>Details:</strong> <span id="user-details">Age: 25, Height: 175cm, Weight: 70kg</span></p>
-                <input type="file" id="upload-pic" accept="image/*" onchange="changeProfilePic()">
+        <main class="flex-1 p-5">
+            <h1 class="text-3xl mb-5">AfyaSync</h1>
+            <div class="bg-white p-4 rounded-lg shadow-md text-center">
+                <img id="profile-pic" src="https://i.pinimg.com/736x/f7/52/76/f75276daa824753feab1f48879bc892f.jpg" 
+                     alt="Profile Picture" 
+                     class="w-24 h-24 rounded-full mx-auto mb-3 border-2 border-blue-600">
+                <p class="mb-2"><strong>Welcome,</strong> <span id="user-name">Mary</span></p>
+                <p class="mb-2"><strong>Email:</strong> <span id="user-email">mary.ann@gmail.com</span></p>
+                <p class="mb-4"><strong>Details:</strong> <span id="user-details">Age: 25, Height: 175cm, Weight: 70kg</span></p>
+                <input type="file" id="upload-pic" accept="image/*" onchange="changeProfilePic()" class="mt-2">
             </div>
         </main>
     </div>
