@@ -1,6 +1,7 @@
 /home/lance/CODEWRLD/new-zuri/src/main/java/com/example/demo/controller/TestController.java
 /home/lance/CODEWRLD/new-zuri/src/main/java/com/example/demo/controller/ResetPasswordController.java
 /home/lance/CODEWRLD/new-zuri/src/main/java/com/example/demo/controller/LogInController.java
+/home/lance/CODEWRLD/new-zuri/src/main/java/com/example/demo/controller/ProfileController.java
 /home/lance/CODEWRLD/new-zuri/src/main/java/com/example/demo/repository/UserRepository.java
 /home/lance/CODEWRLD/new-zuri/src/main/java/com/example/demo/controller/SignUpController.java
 /home/lance/CODEWRLD/new-zuri/src/main/java/com/example/demo/controller/HomePageController.java
