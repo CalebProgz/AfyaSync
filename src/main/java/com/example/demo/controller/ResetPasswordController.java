@@ -6,10 +6,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/api")
-public class LogInController {
+public class ResetPasswordController {
 
-    @GetMapping("/LoginPage.html")
-    public String loginPage() {
-        return "LoginPage";
+    @GetMapping("/resetpassword.html")
+    public String resetPasswordPage() {
+        return "resetPassword";
     }
 }

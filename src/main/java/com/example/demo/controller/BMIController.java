@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/api")
 public class BMIController {
 
-    @GetMapping("/bmi")
+    @GetMapping("/BMI.html")
     public String bmiPage() {
         return "BMI";
     }
