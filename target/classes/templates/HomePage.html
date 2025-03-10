@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="_csrf" th:content="${_csrf?.token}">
+    <meta name="_csrf_header" th:content="${_csrf?.headerName}">
     <title>AfyaSync Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -93,7 +95,7 @@
                     <div class="flex items-start space-x-6">
                         <div class="relative">
                             <img id="profile-pic" 
-                                 th:src="${user?.profilePicture != null ? user.profilePicture : 'https://i.pinimg.com/736x/f7/52/76/f75276daa824753feab1f48879bc892f.jpg'}" 
+                                 th:src="${profileImageBase64 != null ? 'data:image/jpeg;base64,' + profileImageBase64 : 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSIjMjBEQkRCIj48cGF0aCBkPSJNMTIgMEMxOC42MjcgMCAyNCA1LjM3MyAyNCAxMkMyNCAxOC42MjcgMTguNjI3IDI0IDEyIDI0QzUuMzczIDI0IDAgMTguNjI3IDAgMTJDMCA1LjM3MyA1LjM3MyAwIDEyIDBaTTEyIDIuNEM2LjY5OCAyLjQgMi40IDYuNjk4IDIuNCAxMkMyLjQgMTcuMzAyIDYuNjk4IDIxLjYgMTIgMjEuNkMxNy4zMDIgMjEuNiAyMS42IDE3LjMwMiAyMS42IDEyQzIxLjYgNi42OTggMTcuMzAyIDIuNCAxMiAyLjRaTTEyIDUuNEMxNC4zMTk2IDUuNCAxNi4yIDcuMjgwNDMgMTYuMiA5LjZDMTYuMiAxMS45MTk2IDE0LjMxOTYgMTMuOCAxMiAxMy44QzkuNjgwNDMgMTMuOCA3LjggMTEuOTE5NiA3LjggOS42QzcuOCA3LjI4MDQzIDkuNjgwNDMgNS40IDEyIDUuNFpNMTIgMTUuNkMxNi4yNzIzIDE1LjYgMTkuOCAxNy42NjM3IDE5LjggMjAuNEg0LjJDNC4yIDE3LjY2MzcgNy43Mjc3MSAxNS42IDEyIDE1LjZaIi8+PC9zdmc+'}" 
                                  alt="Profile Picture" 
                                  class="w-24 h-24 rounded-full border-2 border-blue-600 object-cover">
                             <label for="upload-pic" class="absolute bottom-0 right-0 bg-blue-600 rounded-full p-1 cursor-pointer hover:bg-blue-700 transition-colors">
@@ -106,13 +108,17 @@
                         <div class="flex-1">
                             <div class="flex justify-between items-start">
                                 <div>
-                                    <h2 class="text-2xl font-semibold text-gray-800" th:text="${user?.name ?: 'Guest'}">Guest</h2>
-                                    <p class="text-gray-600" th:text="${user?.email ?: 'No email set'}">No email set</p>
+                                    <h2 class="text-2xl font-semibold text-gray-800" th:text="${user.name ?: 'New User'}">New User</h2>
+                                    <p class="text-gray-600" th:text="${user.email ?: 'No email set'}">No email set</p>
                                 </div>
-                                <a href="/api/EditProfile.html" class="text-blue-600 hover:text-blue-800 text-sm">Edit Profile</a>
+                                <a href="/api/EditProfile.html" class="text-blue-600 hover:text-blue-800 text-sm">
+                                    <span th:text="${user.name == 'New User' ? 'Complete Profile' : 'Edit Profile'}">Edit Profile</span>
+                                </a>
                             </div>
                             <div class="mt-4">
-                                <p class="text-sm text-gray-600">Last login: <span th:text="${#dates.format(user?.lastLogin, 'dd MMM yyyy HH:mm')}">Never</span></p>
+                                <p class="text-sm text-gray-600">Last login: 
+                                    <span th:text="${formattedLastLogin ?: 'Never'}">Never</span>
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -127,7 +133,8 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/>
                             </svg>
                         </div>
-                        <p class="text-2xl font-semibold mt-2" th:text="${user?.height != null ? user.height + ' cm' : 'Not set'}">Not set</p>
+                        <p class="text-2xl font-semibold mt-2" th:text="${user.height + ' cm'}">Not set</p>
+                        <p class="text-xs text-gray-500" th:if="${user.height == 0}">(Default value)</p>
                     </div>
                     <div class="bg-white rounded-lg shadow-md p-6 transform hover:scale-105 transition-transform duration-200">
                         <div class="flex items-center justify-between">
@@ -157,10 +164,10 @@
                         <div th:if="${user?.height != null && user?.weight != null}">
                             <p class="text-gray-600">BMI Status</p>
                             <div class="mt-2 h-4 bg-gray-200 rounded-full">
-                                <div th:style="${'width: ' + calculateBMIPercentage(user.height, user.weight) + '%'}"
+                                <div th:style="'width: ' + ${bmiPercentage} + '%'"
                                      class="h-full bg-blue-600 rounded-full"></div>
                             </div>
-                            <p class="mt-1 text-sm text-gray-500" th:text="${calculateBMIStatus(user.height, user.weight)}"></p>
+                            <p class="mt-1 text-sm text-gray-500" th:text="${bmiStatus}"></p>
                         </div>
                         
                         <!-- Quick Actions -->
@@ -205,13 +212,11 @@
             const input = document.getElementById('upload-pic');
             const file = input.files[0];
             if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('profile-pic').src = e.target.result;
-                    // Here you would typically upload the image to your server
-                    uploadProfilePicture(file);
-                };
-                reader.readAsDataURL(file);
+                if (file.size > 5000000) { // 5MB limit
+                    alert('File is too large. Please choose an image under 5MB.');
+                    return;
+                }
+                uploadProfilePicture(file);
             }
         }
 
@@ -219,22 +224,36 @@
             const formData = new FormData();
             formData.append('profilePicture', file);
 
+            // Get CSRF token
+            const token = document.querySelector('meta[name="_csrf"]')?.getAttribute('content');
+            const header = document.querySelector('meta[name="_csrf_header"]')?.getAttribute('content');
+
             fetch('/api/uploadProfilePicture', {
                 method: 'POST',
-                body: formData
+                body: formData,
+                headers: header ? {
+                    [header]: token
+                } : {},
+                credentials: 'same-origin'
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
             .then(data => {
                 if (data.success) {
-                    // Show success message
+                    document.getElementById('profile-pic').src = data.imageData;
                     console.log('Profile picture updated successfully');
                 } else {
-                    // Show error message
-                    console.error('Failed to update profile picture');
+                    console.error('Failed to update profile picture:', data.message);
+                    alert('Failed to update profile picture: ' + data.message);
                 }
             })
             .catch(error => {
                 console.error('Error uploading profile picture:', error);
+                alert('Error uploading profile picture. Please try again.');
             });
         }
 

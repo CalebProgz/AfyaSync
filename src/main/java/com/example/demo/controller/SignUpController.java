@@ -37,7 +37,7 @@ public class SignUpController {
             User savedUser = userRepository.save(user);
             logger.info("Successfully created user with ID: {}", savedUser.getId());
             
-            return "redirect:/api/LoginPage.html";
+            return "redirect:/api/login";
         } catch (Exception e) {
             logger.error("Error creating user: ", e);
             return "redirect:/api/SignUp.html?error=true";

@@ -1,10 +1,11 @@
+C:\Users\caleb\OneDrive\Desktop\myapp\src\main\java\com\example\demo\controller\EditProfileController.java
 C:\Users\caleb\OneDrive\Desktop\myapp\src\main\java\com\example\demo\controller\SignUpController.java
 C:\Users\caleb\OneDrive\Desktop\myapp\src\main\java\com\example\demo\model\User.java
 C:\Users\caleb\OneDrive\Desktop\myapp\src\main\java\com\example\demo\repository\UserRepository.java
 C:\Users\caleb\OneDrive\Desktop\myapp\src\main\java\com\example\demo\controller\HomePageController.java
-C:\Users\caleb\OneDrive\Desktop\myapp\src\main\java\com\example\demo\controller\LogInController.java
+C:\Users\caleb\OneDrive\Desktop\myapp\src\main\java\com\example\demo\controller\LoginController.java
 C:\Users\caleb\OneDrive\Desktop\myapp\src\main\java\com\example\demo\controller\ResetPasswordController.java
-C:\Users\caleb\OneDrive\Desktop\myapp\src\main\java\com\example\demo\controller\LogoutController.java
+C:\Users\caleb\OneDrive\Desktop\myapp\src\main\java\com\example\demo\controller\CustomErrorController.java
 C:\Users\caleb\OneDrive\Desktop\myapp\src\main\java\com\example\demo\controller\ProfileController.java
 C:\Users\caleb\OneDrive\Desktop\myapp\src\main\java\com\example\demo\controller\BMIController.java
 C:\Users\caleb\OneDrive\Desktop\myapp\src\main\java\com\example\demo\controller\TestController.java
