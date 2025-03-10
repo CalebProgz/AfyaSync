@@ -199,9 +199,11 @@
                 return "You are underweight. Consider consulting a healthcare provider about a balanced diet plan.";
             } else if (bmi >= 18.5 && bmi < 24.9) {
                 return "Your weight is normal. Keep maintaining a healthy lifestyle!";
-            } else if (bmi >= 25 && bmi < 29.9) {
-                return "You are overweight. Consider regular exercise and a balanced diet.";
-            } else {
+            } else if (bmi >= 25 && bmi < 30) {
+                return "You are overweight. A combination of regular exercise and a balanced, calorie-controlled diet can help you reach a healthy weight.";
+            } else if(bmi >= 30 && bmi < 40) {
+                return "You are in the obese range. Please consult a healthcare provider for personalized advice.";
+            } else{
                 return "You are in the obese range. Please consult a healthcare provider for personalized advice.";
             }
         }
@@ -227,12 +229,24 @@
                     "Keep tracking your BMI periodically",
                     ...commonTips
                 ];
+            } else if (bmi >= 25 && bmi < 30) {
+                return [
+                    "Create a moderate calorie deficit (500 calories less per day)",
+                    "Include 30 minutes of moderate exercise daily",
+                    "Focus on whole grains and lean proteins",
+                    "Increase fiber intake through vegetables and fruits",
+                    "Monitor portion sizes during meals",
+                    "Consider keeping a food diary",
+                    "Try to reduce processed food intake",
+                    ...commonTips
+                ];
             } else {
                 return [
                     "Focus on portion control",
                     "Include more fruits and vegetables in your diet",
                     "Start with low-impact exercises",
                     "Track your daily caloric intake",
+                    "Consider consulting a nutritionist",
                     ...commonTips
                 ];
             }
