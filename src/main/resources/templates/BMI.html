@@ -79,25 +79,56 @@
                             <label class="block text-sm font-medium text-gray-700">Height (cm)</label>
                             <input id="height" 
                                    type="number" 
+                                   min="1" 
+                                   max="300"
+                                   step="0.1"
                                    class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                   placeholder="Enter height">
-        </div>
+                                   placeholder="Enter height (e.g., 170)">
+                            <p id="height-error" class="mt-1 text-sm text-red-600 hidden">Please enter a valid height between 1 and 300 cm</p>
+                        </div>
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Weight (kg)</label>
                             <input id="weight" 
-                                   type="number" 
+                                   type="number"
+                                   min="1"
+                                   max="500"
+                                   step="0.1"
                                    class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                   placeholder="Enter weight">
-        </div>
+                                   placeholder="Enter weight (e.g., 70)">
+                            <p id="weight-error" class="mt-1 text-sm text-red-600 hidden">Please enter a valid weight between 1 and 500 kg</p>
+                        </div>
 
                         <button onclick="calculateBMI()" 
-                                class="w-full px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700">
+                                class="w-full px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                             Calculate BMI
                         </button>
 
-        <div id="result" class="mt-4 text-lg font-semibold text-gray-700"></div>
-        <p id="advice" class="mt-2 text-gray-600"></p>
+                        <div id="bmi-scale" class="hidden mt-6">
+                            <div class="h-4 rounded-full flex">
+                                <div class="w-1/4 bg-blue-400 rounded-l-full" title="Underweight"></div>
+                                <div class="w-1/4 bg-green-400" title="Normal"></div>
+                                <div class="w-1/4 bg-yellow-400" title="Overweight"></div>
+                                <div class="w-1/4 bg-red-400 rounded-r-full" title="Obese"></div>
+                            </div>
+                            <div class="flex justify-between text-xs text-gray-600 mt-1">
+                                <span>16</span>
+                                <span>18.5</span>
+                                <span>25</span>
+                                <span>30</span>
+                                <span>40</span>
+                            </div>
+                            <div id="bmi-marker" class="relative h-4 w-2 bg-black -mt-8 hidden"></div>
+                        </div>
+
+                        <div id="result" class="mt-4 text-lg font-semibold text-gray-700"></div>
+                        <p id="advice" class="mt-2 text-gray-600"></p>
+
+                        <div id="health-tips" class="mt-6 p-4 bg-gray-50 rounded-lg hidden">
+                            <h3 class="font-semibold text-gray-800 mb-2">Health Tips:</h3>
+                            <ul id="tips-list" class="list-disc list-inside text-gray-600 space-y-2">
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -114,25 +145,97 @@
         }
 
         function calculateBMI() {
-            let height = document.getElementById('height').value / 100;
+            document.getElementById('height-error').classList.add('hidden');
+            document.getElementById('weight-error').classList.add('hidden');
+
+            let height = document.getElementById('height').value;
             let weight = document.getElementById('weight').value;
-            let bmi = (weight / (height * height)).toFixed(2);
+
+            if (!isValidInput(height, 1, 300)) {
+                document.getElementById('height-error').classList.remove('hidden');
+                return;
+            }
+            if (!isValidInput(weight, 1, 500)) {
+                document.getElementById('weight-error').classList.remove('hidden');
+                return;
+            }
+
+            height = height / 100;
+            let bmi = (weight / (height * height)).toFixed(1);
+            
+            document.getElementById('bmi-scale').classList.remove('hidden');
+            
+            updateBMIMarker(bmi);
             
             let resultText = `Your BMI is: ${bmi}`;
-            let advice = "";
-            
-            if (bmi < 18.5) {
-                advice = "You are underweight. Consider a balanced diet.";
-            } else if (bmi >= 18.5 && bmi < 24.9) {
-                advice = "Your weight is normal. Keep maintaining a healthy lifestyle!";
-            } else if (bmi >= 25 && bmi < 29.9) {
-                advice = "You are overweight. Consider regular exercise and a healthy diet.";
-            } else {
-                advice = "You are obese. A healthy diet and exercise are strongly recommended.";
-            }
+            let advice = getBMIAdvice(bmi);
+            let tips = getHealthTips(bmi);
             
             document.getElementById('result').innerText = resultText;
             document.getElementById('advice').innerText = advice;
+            
+            const healthTipsDiv = document.getElementById('health-tips');
+            const tipsList = document.getElementById('tips-list');
+            healthTipsDiv.classList.remove('hidden');
+            tipsList.innerHTML = tips.map(tip => `<li>${tip}</li>`).join('');
+        }
+
+        function isValidInput(value, min, max) {
+            return value && !isNaN(value) && value >= min && value <= max;
+        }
+
+        function updateBMIMarker(bmi) {
+            const marker = document.getElementById('bmi-marker');
+            const scale = document.getElementById('bmi-scale');
+            const scaleWidth = scale.offsetWidth;
+            
+            const position = ((bmi - 16) / (40 - 16)) * scaleWidth;
+            marker.style.left = `${Math.max(0, Math.min(position, scaleWidth))}px`;
+            marker.classList.remove('hidden');
+        }
+
+        function getBMIAdvice(bmi) {
+            if (bmi < 18.5) {
+                return "You are underweight. Consider consulting a healthcare provider about a balanced diet plan.";
+            } else if (bmi >= 18.5 && bmi < 24.9) {
+                return "Your weight is normal. Keep maintaining a healthy lifestyle!";
+            } else if (bmi >= 25 && bmi < 29.9) {
+                return "You are overweight. Consider regular exercise and a balanced diet.";
+            } else {
+                return "You are in the obese range. Please consult a healthcare provider for personalized advice.";
+            }
+        }
+
+        function getHealthTips(bmi) {
+            const commonTips = [
+                "Stay hydrated by drinking plenty of water",
+                "Get 7-9 hours of sleep each night",
+                "Exercise regularly, aim for 150 minutes per week"
+            ];
+
+            if (bmi < 18.5) {
+                return [
+                    "Increase your caloric intake with nutrient-rich foods",
+                    "Include protein-rich foods in every meal",
+                    "Consider strength training exercises",
+                    ...commonTips
+                ];
+            } else if (bmi >= 18.5 && bmi < 24.9) {
+                return [
+                    "Maintain your balanced diet",
+                    "Mix cardio and strength training",
+                    "Keep tracking your BMI periodically",
+                    ...commonTips
+                ];
+            } else {
+                return [
+                    "Focus on portion control",
+                    "Include more fruits and vegetables in your diet",
+                    "Start with low-impact exercises",
+                    "Track your daily caloric intake",
+                    ...commonTips
+                ];
+            }
         }
     </script>
 </body>
