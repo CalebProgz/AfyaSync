@@ -86,9 +86,6 @@ public class User {
 
     @PrePersist
     public void setDefaultValues() {
-        if (height == null) height = 170.0;
-        if (weight == null) weight = 70.0;
-        if (age == null) age = 25;
         if (name == null) name = "New User";
         if (lastLogin == null) {
             lastLogin = LocalDateTime.now();
