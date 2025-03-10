@@ -104,12 +104,24 @@
                             Calculate BMI
                         </button>
 
+                        <!-- Adding spacing between the Calculate BMI and the scale -->
+                    <div id="" class="hidden mt-12"></div>
+                    </div>
+                        
                         <div id="bmi-scale" class="hidden mt-6">
                             <div class="h-4 rounded-full flex">
-                                <div class="w-1/4 bg-blue-400 rounded-l-full" title="Underweight"></div>
-                                <div class="w-1/4 bg-green-400" title="Normal"></div>
-                                <div class="w-1/4 bg-yellow-400" title="Overweight"></div>
-                                <div class="w-1/4 bg-red-400 rounded-r-full" title="Obese"></div>
+                                <div class="w-1/4 bg-blue-400 rounded-l-full relative" title="Underweight">
+                                    <span class="absolute -top-6 left-0 text-xs text-gray-600">Underweight</span>
+                                </div>
+                                <div class="w-1/4 bg-green-400 relative" title="Normal">
+                                    <span class="absolute -top-6 left-0 text-xs text-gray-600">Normal</span>
+                                </div>
+                                <div class="w-1/4 bg-yellow-400 relative" title="Overweight">
+                                    <span class="absolute -top-6 left-0 text-xs text-gray-600">Overweight</span>
+                                </div>
+                                <div class="w-1/4 bg-red-400 rounded-r-full relative" title="Obese">
+                                    <span class="absolute -top-6 left-0 text-xs text-gray-600">Obese</span>
+                                </div>
                             </div>
                             <div class="flex justify-between text-xs text-gray-600 mt-1">
                                 <span>16</span>
@@ -118,7 +130,7 @@
                                 <span>30</span>
                                 <span>40</span>
                             </div>
-                            <div id="bmi-marker" class="relative h-4 w-2 bg-black -mt-8 hidden"></div>
+                            <div id="bmi-marker" class="relative h-6 w-2 -mt-8 hidden" style="transition: left 0.3s ease-in-out;"></div>
                         </div>
 
                         <div id="result" class="mt-4 text-lg font-semibold text-gray-700"></div>
@@ -189,9 +201,61 @@
             const scale = document.getElementById('bmi-scale');
             const scaleWidth = scale.offsetWidth;
             
-            const position = ((bmi - 16) / (40 - 16)) * scaleWidth;
-            marker.style.left = `${Math.max(0, Math.min(position, scaleWidth))}px`;
+            // Define BMI ranges more precisely
+            const minBMI = 16;
+            const maxBMI = 40;
+            const ranges = {
+                underweight: { min: 16, max: 18.5 },
+                normal: { min: 18.5, max: 25 },
+                overweight: { min: 25, max: 30 },
+                obese: { min: 30, max: 40 }
+            };
+            
+            // Clamp BMI value to our scale range
+            const clampedBMI = Math.max(minBMI, Math.min(maxBMI, bmi));
+            
+            // Calculate position with improved precision
+            let position;
+            if (clampedBMI < ranges.underweight.max) {
+                // Underweight zone (first quarter)
+                const rangeWidth = scaleWidth / 4;
+                const rangeProgress = (clampedBMI - ranges.underweight.min) / (ranges.underweight.max - ranges.underweight.min);
+                position = rangeWidth * rangeProgress;
+            } else if (clampedBMI < ranges.normal.max) {
+                // Normal zone (second quarter)
+                const rangeWidth = scaleWidth / 4;
+                const rangeProgress = (clampedBMI - ranges.normal.min) / (ranges.normal.max - ranges.normal.min);
+                position = rangeWidth + (rangeWidth * rangeProgress);
+            } else if (clampedBMI < ranges.overweight.max) {
+                // Overweight zone (third quarter)
+                const rangeWidth = scaleWidth / 4;
+                const rangeProgress = (clampedBMI - ranges.overweight.min) / (ranges.overweight.max - ranges.overweight.min);
+                position = (2 * rangeWidth) + (rangeWidth * rangeProgress);
+            } else {
+                // Obese zone (fourth quarter)
+                const rangeWidth = scaleWidth / 4;
+                const rangeProgress = (clampedBMI - ranges.obese.min) / (ranges.obese.max - ranges.obese.min);
+                position = (3 * rangeWidth) + (rangeWidth * rangeProgress);
+            }
+
+            // Update marker position and add transition for smooth movement
+            marker.style.transition = 'left 0.3s ease-in-out';
+            marker.style.left = `${position}px`;
             marker.classList.remove('hidden');
+            
+            // Add BMI value tooltip to marker
+            marker.title = `BMI: ${bmi}`;
+            
+            // Update marker color based on BMI range
+            if (bmi < 18.5) {
+                marker.style.backgroundColor = '#60A5FA'; // blue-400
+            } else if (bmi < 25) {
+                marker.style.backgroundColor = '#34D399'; // green-400
+            } else if (bmi < 30) {
+                marker.style.backgroundColor = '#FBBF24'; // yellow-400
+            } else {
+                marker.style.backgroundColor = '#F87171'; // red-400
+            }
         }
 
         function getBMIAdvice(bmi) {
